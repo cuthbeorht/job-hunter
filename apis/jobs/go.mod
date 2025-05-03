@@ -1,4 +1,4 @@
-module github.com/cuthbeorht/job-hunter/jobs
+module github.com/cuthbeorht/job-hunter
 
 go 1.24.2
 
