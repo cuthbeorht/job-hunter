@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- <link rel='stylesheet' type='text/css' media='screen' href='main.css'> -->
+    <!-- <script src='main.js'></script> -->
+</head>
+<body>
+    <p>
+        <h1>Job Hunter</h1>
+        <div>
+            <h4>Current Openings</h4>
+            <ul id="jobs"></ul>
+        </div>
+    </p>
+</body>
+<script type="text/javascript">
+    const jobs = [];
+
+    const requestBody = {
+        method: "GET"
+    }
+    fetch("http://localhost:9090/jobs")
+        .then(response => response.json())
+        .then(data => {
+            const jobContainer = document.getElementById("jobs");
+
+            data.map(d => {
+                const newListItem = document.createElement("li");
+                newListItem.innerText = d.title;
+                jobContainer.appendChild(newListItem);
+            });
+
+            
+        })
+        .catch(err => console.error(err));
+</script>
+</html>
