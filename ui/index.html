@@ -8,7 +8,7 @@
     <!-- <link rel='stylesheet' type='text/css' media='screen' href='main.css'> -->
     <!-- <script src='main.js'></script> -->
 </head>
-<body>
+<body onload="listJobs()">
     <p>
         <h1>Job Hunter</h1>
         <div>
@@ -18,24 +18,36 @@
     </p>
 </body>
 <script type="text/javascript">
-    const jobs = [];
 
-    const requestBody = {
-        method: "GET"
+    const listJobs = () => {
+        
+        const jobs = [];
+
+        const requestBody = {
+            method: "GET"
+        }
+        fetch("http://localhost:9090/jobs")
+            .then(response => response.json())
+            .then(data => {
+                const jobContainer = document.getElementById("jobs");
+                jobContainer.innerHTML = null;
+
+                data.map(d => {
+                    const newListItem = document.createElement("li");
+                    newListItem.innerText = d.title;
+                    jobContainer.appendChild(newListItem);
+                });
+
+                
+            })
+            .catch(err => console.error(err));
+
+        const timeoutId = setTimeout(() => {
+            console.log("Fetching jobs...");
+            listJobs();
+        }, 5000);
     }
-    fetch("http://localhost:9090/jobs")
-        .then(response => response.json())
-        .then(data => {
-            const jobContainer = document.getElementById("jobs");
 
-            data.map(d => {
-                const newListItem = document.createElement("li");
-                newListItem.innerText = d.title;
-                jobContainer.appendChild(newListItem);
-            });
-
-            
-        })
-        .catch(err => console.error(err));
+    
 </script>
 </html>
