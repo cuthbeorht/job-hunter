@@ -13,13 +13,16 @@
         <h1>Job Hunter</h1>
         <div>
             <h4>Current Openings</h4>
+            <button onclick="listJobs()">Refresh</button>
             <ul id="jobs"></ul>
         </div>
     </p>
 </body>
-<script type="text/javascript">
+<script type="text/javascript" defer>
 
     const listJobs = () => {
+
+        console.log("Fetching jobs");
         
         const jobs = [];
 
@@ -41,11 +44,6 @@
                 
             })
             .catch(err => console.error(err));
-
-        const timeoutId = setTimeout(() => {
-            console.log("Fetching jobs...");
-            listJobs();
-        }, 5000);
     }
 
     
