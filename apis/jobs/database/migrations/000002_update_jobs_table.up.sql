@@ -1,0 +1,3 @@
+ALTER TABLE jobs
+    ADD COLUMN company TEXT,
+    ADD COLUMN source VARCHAR(50);
