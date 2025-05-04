@@ -4,7 +4,7 @@
     "author": "David Sciacchettano",
     "type": "module",
     "scripts": {
-        "dev": "node src/server.js"
+        "dev": "node server.js"
     },
     "dependencies": {
         "express": "^5.1.0"
