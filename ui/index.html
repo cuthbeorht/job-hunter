@@ -8,34 +8,44 @@
     <!-- <link rel='stylesheet' type='text/css' media='screen' href='main.css'> -->
     <!-- <script src='main.js'></script> -->
 </head>
-<body>
+<body onload="listJobs()">
     <p>
         <h1>Job Hunter</h1>
         <div>
             <h4>Current Openings</h4>
+            <button onclick="listJobs()">Refresh</button>
             <ul id="jobs"></ul>
         </div>
     </p>
 </body>
-<script type="text/javascript">
-    const jobs = [];
+<script type="text/javascript" defer>
 
-    const requestBody = {
-        method: "GET"
+    const listJobs = () => {
+
+        console.log("Fetching jobs");
+        
+        const jobs = [];
+
+        const requestBody = {
+            method: "GET"
+        }
+        fetch("http://localhost:9090/jobs")
+            .then(response => response.json())
+            .then(data => {
+                const jobContainer = document.getElementById("jobs");
+                jobContainer.innerHTML = null;
+
+                data.map(d => {
+                    const newListItem = document.createElement("li");
+                    newListItem.innerText = d.title;
+                    jobContainer.appendChild(newListItem);
+                });
+
+                
+            })
+            .catch(err => console.error(err));
     }
-    fetch("http://localhost:9090/jobs")
-        .then(response => response.json())
-        .then(data => {
-            const jobContainer = document.getElementById("jobs");
 
-            data.map(d => {
-                const newListItem = document.createElement("li");
-                newListItem.innerText = d.title;
-                jobContainer.appendChild(newListItem);
-            });
-
-            
-        })
-        .catch(err => console.error(err));
+    
 </script>
 </html>

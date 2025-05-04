@@ -1,0 +1,12 @@
+{
+    "name": "job-hunter-ui",
+    "version": "0.0.1",
+    "author": "David Sciacchettano",
+    "type": "module",
+    "scripts": {
+        "dev": "node server.js"
+    },
+    "dependencies": {
+        "express": "^5.1.0"
+    }
+}
