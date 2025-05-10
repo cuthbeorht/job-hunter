@@ -1,16 +1,17 @@
 package database
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"database/sql"
+
+	_ "github.com/lib/pq"
 )
 
 type Database struct {
-	Connection *gorm.DB
+	Connection *sql.DB
 }
 
 func Connect() Database {
-	db, err := gorm.Open("postgres","user=root password=toor dbname=job_hunter sslmode=disable")
+	db, err := sql.Open("postgres","user=root password=toor dbname=job_hunter sslmode=disable")
 
 	if err != nil {
 		errMsg := "Failed to connect to database: "+err.Error()
