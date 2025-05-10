@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http/httptest"
+	"slices"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -27,13 +28,6 @@ func NewMockDb() (*sql.DB, sqlmock.Sqlmock) {
 	if err != nil {
         log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
     }
-	
-
-    // db, err = sql.Open("postgres", "user=root password=toor dbname=job_hunter sslmode=disable")
-
-    // if err != nil {
-    //     log.Fatalf("An error '%s' was not expected when opening gorm database", err)
-    // }
 
     return db, mock
 }
@@ -42,12 +36,7 @@ func TestGivenNoJobsListJobsExpectNonEmptyList(t *testing.T) {
 	td := setup(t)
 	defer td(t)
 
-	// db, mock := NewMockDb()
-
-	db, mock, err := sqlmock.New()
-	if err != nil {
-        log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
-    }
+	db, mock := NewMockDb()
 	defer db.Close()
 
 	columns := []string{"id", "title", "company", "source"}
@@ -79,10 +68,7 @@ func TestGivenJobsListJobsExpect2Jobs(t *testing.T) {
 	td := setup(t)
 	defer td(t)
 
-	db, mock, err := sqlmock.New()
-	if err != nil {
-        log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
-    }
+	db, mock := NewMockDb()
 	defer db.Close()
 
 	columns := []string{"id", "title", "company", "source"}
@@ -102,7 +88,7 @@ func TestGivenJobsListJobsExpect2Jobs(t *testing.T) {
 
 	var actualJobs []models.Job
 
-	err = json.Unmarshal([]byte(w.Body.Bytes()), &actualJobs)
+	err := json.Unmarshal([]byte(w.Body.Bytes()), &actualJobs)
 	if err != nil {
 		t.Error("Error parsing error: ", err)
 	}
@@ -112,31 +98,43 @@ func TestGivenJobsListJobsExpect2Jobs(t *testing.T) {
 	}
 }
 
-// func TestGivenJobsListJobsExpectDeveloperAndCashierJobs(t *testing.T) {
-// 	td := setup(t)
-// 	defer td(t)
+func TestGivenJobsListJobsExpectDeveloperAndCashierJobs(t *testing.T) {
+	td := setup(t)
+	defer td(t)
 
-// 	m := new(mockDatabase)
-// 	m.On("Connect", nil).Return()
-// 	controller := JobController{}
+	db, mock := NewMockDb()
+	defer db.Close()
 
-// 	w := httptest.NewRecorder()
-// 	c, _ := gin.CreateTestContext(w)
-// 	var jobs = []models.Job {{Id: "1", Title: "Developer"}, {Id: "2", Title: "Cashier"}}
+	columns := []string{"id", "title", "company", "source"}
+	mock.ExpectQuery("SELECT \\* from jobs").WillReturnRows(
+		sqlmock.NewRows(columns).
+			AddRow( "1", "Developer", "Squaresoft", "LinkedIn").
+			AddRow( "2", "Cashier", "Maxi", "LinkedIn"),
+	)
 
-// 	controller.GetAll(c)
+	database := database.Database{Connection: db}
+	controller := JobController{Connection: database}
 
-// 	var actualJobs []models.Job
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+	var jobs = []models.Job {
+		{Id: 1, Title: "Developer", Company: "Squaresoft", Source: "LinkedIn"},
+		{Id: 2, Title: "Cashier", Company: "Maxi", Source: "LinkedIn"},
+	}
 
-// 	err := json.Unmarshal([]byte(w.Body.Bytes()), &actualJobs)
-// 	if err != nil {
-// 		t.Error("Error parsing error: ", err)
-// 	}
+	controller.GetAll(c)
 
-// 	for _, actualJob := range actualJobs {
-// 		isPresent := slices.Contains(jobs, actualJob)
-// 		if !isPresent {
-// 			t.Error("Missing object ", actualJob)
-// 		}
-// 	}
-// }
+	var actualJobs []models.Job
+
+	err := json.Unmarshal([]byte(w.Body.Bytes()), &actualJobs)
+	if err != nil {
+		t.Error("Error parsing error: ", err)
+	}
+
+	for _, actualJob := range actualJobs {
+		isPresent := slices.Contains(jobs, actualJob)
+		if !isPresent {
+			t.Error("Missing object ", actualJob)
+		}
+	}
+}
