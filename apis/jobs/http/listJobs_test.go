@@ -2,12 +2,14 @@ package http
 
 import (
 	"database/sql"
+	"encoding/json"
 	"log"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/cuthbeorht/job-hunter/database"
+	"github.com/cuthbeorht/job-hunter/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -73,30 +75,42 @@ func TestGivenNoJobsListJobsExpectNonEmptyList(t *testing.T) {
 	}
 }
 
-// func TestGivenJobsListJobsExpect2Jobs(t *testing.T) {
-// 	td := setup(t)
-// 	defer td(t)
+func TestGivenJobsListJobsExpect2Jobs(t *testing.T) {
+	td := setup(t)
+	defer td(t)
 
-// 	m := new(mockDatabase)
-// 	m.On("Connect", nil).Return()
-// 	controller := JobController{}
+	db, mock, err := sqlmock.New()
+	if err != nil {
+        log.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
+    }
+	defer db.Close()
 
-// 	w := httptest.NewRecorder()
-// 	c, _ := gin.CreateTestContext(w)
+	columns := []string{"id", "title", "company", "source"}
+	mock.ExpectQuery("SELECT \\* from jobs").WillReturnRows(
+		sqlmock.NewRows(columns).
+			AddRow( "1", "Developer", "Squaresoft", "LinkedInd").
+			AddRow( "2", "Cashier", "Maxi", "LinkedInd"),
+	)
 
-// 	controller.GetAll(c)
+	database := database.Database{Connection: db}
+	controller := JobController{Connection: database}
 
-// 	var actualJobs []models.Job
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
 
-// 	err := json.Unmarshal([]byte(w.Body.Bytes()), &actualJobs)
-// 	if err != nil {
-// 		t.Error("Error parsing error: ", err)
-// 	}
+	controller.GetAll(c)
 
-// 	if len(actualJobs) != 2 {
-// 		t.Error("Expected 2 jobs. Got ", len(actualJobs))
-// 	}
-// }
+	var actualJobs []models.Job
+
+	err = json.Unmarshal([]byte(w.Body.Bytes()), &actualJobs)
+	if err != nil {
+		t.Error("Error parsing error: ", err)
+	}
+
+	if len(actualJobs) != 2 {
+		t.Error("Expected 2 jobs. Got ", len(actualJobs))
+	}
+}
 
 // func TestGivenJobsListJobsExpectDeveloperAndCashierJobs(t *testing.T) {
 // 	td := setup(t)

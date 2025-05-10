@@ -1,9 +1,11 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Job struct {
-	Id string `json:"id"`
+	Id int `json:"id"`
 	Title string `json:"title"`
 	Company string `json:"company"`
 	Source string `json:"source"`
@@ -12,7 +14,7 @@ type Job struct {
 type JobEntity struct {
 	gorm.Model
 	
-	Id string 
+	Id int 
 	Title string 
 	Company string 
 	Source string
