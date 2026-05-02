@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
-    "migrate": "node-pg-migrate up",
-    "migrate:down": "node-pg-migrate down",
-    "migrate:create": "node-pg-migrate create"
+    "migrate": "node-pg-migrate up -d $DATABASE_URL -m migrations",
+    "migrate:down": "node-pg-migrate down -d $DATABASE_URL -m migrations",
+    "migrate:create": "node-pg-migrate create -d $DATABASE_URL -m migrations"
   },
   "keywords": [],
   "author": "",
