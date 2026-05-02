@@ -12,9 +12,9 @@ export default class AccountController {
     async register(req: Request, res: Response) {
         try {
             const parsed = registerSchema.safeParse(req.body);
-
+            
             if (!parsed.success) {
-            return res.status(400).json({ error: parsed.error.flatten() });
+                return res.status(400).json({ error: parsed.error.issues[0].message });
             }
 
             const user = await this.service.register(
