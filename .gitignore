@@ -1,2 +1,4 @@
+# Backend for Job Hunter, a job search application built with Node.js and Express.
 **/.env
 **/node_modules/
+**/dist/
