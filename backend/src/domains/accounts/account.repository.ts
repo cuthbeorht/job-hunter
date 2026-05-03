@@ -1,4 +1,4 @@
-import PostgresqlClient from "@/db/postgresql.client";
+import PostgresqlClient from "../../db/postgresql.client";
 
 
 export default class AccountRepository {
@@ -21,5 +21,19 @@ export default class AccountRepository {
             throw new Error('Failed to create account');
         }
         
+    }
+
+    async findByEmailAndPasswordHash(email: string, passwordHash: string): Promise<AccountEntity> {
+        const query = 'SELECT * FROM accounts WHERE email = $1 AND password_hash = $2';
+        try {
+            const result = await this.postgresqlClient.client.query(query, [email, passwordHash]);
+            if (result.rows.length === 0) {
+                throw new Error('Account not found');
+            }
+            return result.rows[0];
+        } catch (error) {
+            console.error('Error finding account:', error);
+            throw new Error('Failed to find account');
+        }
     }
 }

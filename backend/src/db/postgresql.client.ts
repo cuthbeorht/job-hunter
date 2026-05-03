@@ -1,4 +1,4 @@
-import { PostgreSQLConfig } from "@/types/postgresql.type";
+import { PostgreSQLConfig } from "../types/postgresql.type";
 import { Client } from "pg";
 
 
