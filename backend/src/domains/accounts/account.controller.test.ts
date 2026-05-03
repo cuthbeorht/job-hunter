@@ -1,7 +1,9 @@
 import {expect, test, vi, describe, beforeEach, it} from 'vitest';
-import AccountController from './account.controller';
+
 import { Request, Response } from 'express';
-import { mock } from 'node:test';
+import AccountController from '../../domains/accounts/account.controller';
+
+
 
 describe('AccountController', () => {
 
