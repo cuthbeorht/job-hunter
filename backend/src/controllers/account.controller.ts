@@ -10,6 +10,7 @@ export default class AccountController {
     }
     
     async register(req: Request, res: Response) {
+
         try {
             const parsed = registerSchema.safeParse(req.body);
             

@@ -10,7 +10,7 @@
  */
 exports.up = (pgm) => {
     pgm.createExtension('pgcrypto', { ifNotExists: true });
-    pgm.createTable('users', {
+    pgm.createTable('accounts', {
         id: {
             type: 'uuid',
             primaryKey: true,
@@ -21,11 +21,11 @@ exports.up = (pgm) => {
             notNull: true,
             unique: true,
         },
-        passwordHash: {
+        password_hash: {
             type: 'text',
             notNull: true,
         },
-        createdAt: {
+        created_at: {
             type: 'timestamp with time zone',
             notNull: true,
             default: pgm.func('current_timestamp'),
@@ -39,5 +39,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-    pgm.dropTable('users');
+    pgm.dropTable('accounts');
 };
