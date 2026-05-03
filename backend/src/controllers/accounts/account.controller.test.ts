@@ -1,7 +1,7 @@
 import {expect, test, vi, describe, beforeEach, it} from 'vitest';
 
 import { Request, Response } from 'express';
-import AccountController from './account.controller';
+import AccountController from '@/controllers/accounts/account.controller';
 
 
 

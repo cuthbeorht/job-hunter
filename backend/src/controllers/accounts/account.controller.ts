@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 
 import AccountService from '@/services/accounts/account.service';
-import { registerSchema } from '../../validation/auth.validation';
+import { registerSchema } from '@/validation/auth.validation';
 
 
 export default class AccountController {

@@ -1,5 +1,5 @@
 import {expect, test, vi} from 'vitest';
-import AccountService from './account.service';
+import AccountService from '@/services/accounts/account.service';
 
 
 
