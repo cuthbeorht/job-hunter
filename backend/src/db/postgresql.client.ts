@@ -1,5 +1,6 @@
+import { PostgreSQLConfig } from "@/types/postgresql.type";
 import { Client } from "pg";
-import { PostgreSQLConfig } from "../types/postgresql.type";
+
 
 export default class PostgresqlClient {
     
@@ -12,6 +13,7 @@ export default class PostgresqlClient {
             console.log("Connected to PostgreSQL successfully.");
         }).catch((error) => {
             console.error("Error connecting to PostgreSQL:", error);
+            throw error;
         });
     }
 

@@ -1,4 +1,5 @@
-import AccountRepository from "../repositories/account.repository";
+
+import AccountRepository from '@/repositories/account.repository';
 import bcrypt from 'bcrypt';
 
 export default class AccountService {

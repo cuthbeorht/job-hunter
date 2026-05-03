@@ -1,4 +1,5 @@
-import PostgresqlClient from "../db/postgresql.client";
+import PostgresqlClient from "@/db/postgresql.client";
+
 
 export default class AccountRepository {
 

@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
-import AccountService, * as authService from '../../services/accounts/account.service';
-import { registerSchema, loginSchema } from '../../validation/auth.validation';
+
+
+import AccountService from '@/services/accounts/account.service';
+import { registerSchema } from '../../validation/auth.validation';
+
 
 export default class AccountController {
     service: AccountService;
