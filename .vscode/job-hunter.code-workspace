@@ -1,0 +1,20 @@
+{
+	"folders": [
+        {
+            "path": "../apps/backend",
+	    "name": "API"
+        },
+        {
+            "path": "../apps/frontent",
+	    "name": "WEB"
+        },
+	{
+	   "path": "../root/",
+	   "name": "ROOT"
+	
+	}
+    ],
+    "settings": {
+	"editor.tabSize": 2
+    }
+}
