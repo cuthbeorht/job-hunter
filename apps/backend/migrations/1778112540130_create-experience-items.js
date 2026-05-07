@@ -9,27 +9,16 @@ exports.shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-    pgm.createExtension('pgcrypto', { ifNotExists: true });
-    pgm.createTable('accounts', {
+    pgm.createTable('experience_items', {
         id: {
             type: 'uuid',
             primaryKey: true,
             default: pgm.func('gen_random_uuid()'),
         },
-        email: {
+        details: {
             type: 'text',
             notNull: true,
-            unique: true,
-        },
-        password_hash: {
-            type: 'text',
-            notNull: true,
-        },
-        created_at: {
-            type: 'timestamp with time zone',
-            notNull: true,
-            default: pgm.func('current_timestamp'),
-        },
+        }
     });
 };
 
@@ -39,5 +28,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-    pgm.dropTable('accounts');
+    pgm.dropTable('experience_items');
 };
