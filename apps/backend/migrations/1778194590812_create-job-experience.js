@@ -9,6 +9,32 @@ exports.shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
+    
+
+    pgm.createTable('job_experiences', {
+        id: {
+            type: 'uuid',
+            primaryKey: true,
+            default: pgm.func('gen_random_uuid()'),
+        },
+        company_name: {
+            type: 'text',
+            notNull: true,
+        },
+        position_title: {
+            type: 'text',
+            notNull: true,
+        },
+        start_date: {
+            type: 'date',
+            notNull: true,
+        },
+        end_date: {
+            type: 'date',
+        },
+        
+    });
+
     pgm.createTable('experience_items', {
         id: {
             type: 'uuid',
@@ -18,6 +44,11 @@ exports.up = (pgm) => {
         details: {
             type: 'text',
             notNull: true,
+        },
+        job_experience_id: {
+            type: 'uuid',
+            references: '"job_experiences"',
+            onDelete: 'cascade',
         }
     });
 };
@@ -29,4 +60,5 @@ exports.up = (pgm) => {
  */
 exports.down = (pgm) => {
     pgm.dropTable('experience_items');
+    pgm.dropTable('job_experiences');
 };
