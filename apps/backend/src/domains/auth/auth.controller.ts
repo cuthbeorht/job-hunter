@@ -20,6 +20,15 @@ export default class AuthController {
     }
 
     async whoami(req: Request, res: Response) {
-        res.status(200).json({ message: "Authenticated user info" });
+        
+        const idData = req.headers["authorization"].split(".")[1];
+        const rawJson = Buffer.from(idData, "base64").toString("utf-8");
+        const json = JSON.parse(rawJson);
+        console.debug("whoami json:", json);
+        
+        res.status(200).json({ message: {
+            id: json.userId,
+            email: json.email,
+        } });
     }
 }
