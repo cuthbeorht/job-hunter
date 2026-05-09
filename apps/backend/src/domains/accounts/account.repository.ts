@@ -23,14 +23,21 @@ export default class AccountRepository {
         
     }
 
-    async findByEmailAndPasswordHash(email: string, passwordHash: string): Promise<AccountEntity> {
-        const query = 'SELECT * FROM accounts WHERE email = $1 AND password_hash = $2';
+    async findByEmail(email: string): Promise<AccountEntity> {
+        
+        const query = 'SELECT * FROM accounts WHERE email = $1';
         try {
-            const result = await this.postgresqlClient.client.query(query, [email, passwordHash]);
+            const result = await this.postgresqlClient.client.query(query, [email]);
+            
             if (result.rows.length === 0) {
                 throw new Error('Account not found');
             }
-            return result.rows[0];
+            return {
+                id: result.rows[0].id,
+                email: result.rows[0].email,
+                passwordHash: result.rows[0].password_hash,
+                createdAt: result.rows[0].created_at
+            };
         } catch (error) {
             console.error('Error finding account:', error);
             throw new Error('Failed to find account');

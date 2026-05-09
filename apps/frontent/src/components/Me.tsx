@@ -8,6 +8,7 @@ export default function Me() {
 
   async function fetchMe() {
     const res = await getMe();
+    console.debug('Me response:', res);
     setData(res);
   }
 

@@ -9,27 +9,47 @@ exports.shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-    pgm.createExtension('pgcrypto', { ifNotExists: true });
-    pgm.createTable('accounts', {
+    
+
+    pgm.createTable('job_experiences', {
         id: {
             type: 'uuid',
             primaryKey: true,
             default: pgm.func('gen_random_uuid()'),
         },
-        email: {
-            type: 'text',
-            notNull: true,
-            unique: true,
-        },
-        password_hash: {
+        company_name: {
             type: 'text',
             notNull: true,
         },
-        created_at: {
-            type: 'timestamp with time zone',
+        position_title: {
+            type: 'text',
             notNull: true,
-            default: pgm.func('current_timestamp'),
         },
+        start_date: {
+            type: 'date',
+            notNull: true,
+        },
+        end_date: {
+            type: 'date',
+        },
+        
+    });
+
+    pgm.createTable('experience_items', {
+        id: {
+            type: 'uuid',
+            primaryKey: true,
+            default: pgm.func('gen_random_uuid()'),
+        },
+        details: {
+            type: 'text',
+            notNull: true,
+        },
+        job_experience_id: {
+            type: 'uuid',
+            references: '"job_experiences"',
+            onDelete: 'cascade',
+        }
     });
 };
 
@@ -39,5 +59,6 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-    pgm.dropTable('accounts');
+    pgm.dropTable('experience_items');
+    pgm.dropTable('job_experiences');
 };

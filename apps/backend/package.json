@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist && rm -rf node_modules",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "test": "vitest run",
     "migrate": "node-pg-migrate up -d $DATABASE_URL -m migrations",
