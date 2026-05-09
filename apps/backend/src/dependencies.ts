@@ -6,6 +6,9 @@ import AuthService from "./domains/auth/auth.service";
 import AccountRepository from "./domains/accounts/account.repository";
 import PostgresqlClient from "./db/postgresql.client";
 import { Settings } from "./settings";
+import ExperienceController from "./domains/work/experience/experience.controller";
+import ExperienceRepository from "./domains/work/experience/experience.repostory";
+import ExperienceService from "./domains/work/experience/experience.service";
 
 // ALlconfigs come from here
 const settings = new Settings();
@@ -23,4 +26,9 @@ const authRepository = new AuthRepository(postgresqlClient)
 const authService = new AuthService(accountRepository, authRepository);
 const authController = new AuthController(authService);
 
-export {accountController, authController};
+// Experience dependencies
+const experienceRepository = new ExperienceRepository(postgresqlClient);
+const experienceService = new ExperienceService(experienceRepository);
+const experienceController = new ExperienceController(experienceService);
+
+export {accountController, authController, experienceController};
