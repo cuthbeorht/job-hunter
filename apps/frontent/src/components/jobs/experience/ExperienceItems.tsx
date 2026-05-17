@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addExperienceItem } from "../api/jobs";
+import { addExperienceItem } from "../../../api/jobs";
 
 export default function ExperienceItems() {
     

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
-import ExperienceItems from "./components/ExperienceItems";
+import ExperienceItems from "./components/jobs/experience/ExperienceItems";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 
