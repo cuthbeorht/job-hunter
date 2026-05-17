@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { addExperienceItem } from "../api/jobs";
 
 export default function ExperienceItems() {
     
@@ -9,13 +10,15 @@ export default function ExperienceItems() {
         setNewExperienceItem(event.target.value);
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         // Here you would typically send the new experience item to your backend API
         console.log("New Experience Item:", newExperienceItem);
         if (newExperienceItem.trim() === "") {
             setHint("Experience item cannot be empty.");
             return;
         }
+        console.debug("Submitting new experience item:", newExperienceItem);
+        await addExperienceItem(newExperienceItem);
         setNewExperienceItem(""); // Clear the input after submission
     }
     

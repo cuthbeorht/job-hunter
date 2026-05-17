@@ -1,6 +1,6 @@
 
 import ExperienceRepository from "./experience.repostory";
-import { Experience, ExperienceEntity } from "./experience.types";
+import { Experience, ExperienceEntity, ExperienceItem } from "./experience.types";
 
 export default class ExperienceService {
     experienceRepository: ExperienceRepository;
@@ -9,17 +9,9 @@ export default class ExperienceService {
         this.experienceRepository = experienceRepository;
     }
 
-    async create(entity: Experience): Promise<Experience> {
-        const experienceEntity: ExperienceEntity = {
-            id: entity.id,
-            company: entity.company,
-            position: entity.position,
-            startDate: entity.startDate.toISOString(),
-            endDate: entity.endDate ? entity.endDate.toISOString() : undefined,
-            description: entity.description.map(item => ({
-                id: item.id,
-                detail: item.detail
-            }))
+    async create(entity: ExperienceItem): Promise<Experience> {
+        const experienceEntityItem: ExperienceEntity = {
+            detail: entity.detail
         };
         
         const newExperienceEntity = await this.experienceRepository.create(experienceEntity);
