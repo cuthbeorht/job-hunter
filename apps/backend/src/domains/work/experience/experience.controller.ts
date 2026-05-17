@@ -9,7 +9,11 @@ export default class ExperienceController {
 
     async create(req: any, res: any) {
         try {
-            const experience = await this.experienceService.create(req.body);
+            const newExperienceItem = {
+                detail: req.body
+            };
+                
+            const experience = await this.experienceService.create(newExperienceItem);
             res.status(201).json(experience);
         } catch (error) {
             console.error('Error creating experience:', error);

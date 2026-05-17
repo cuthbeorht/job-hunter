@@ -1,3 +1,4 @@
+import { Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import Login from "./Login";
 
@@ -11,7 +12,7 @@ export default function Profile() {
     return (
         <div>
         {
-            token ? (<button onClick={handleLogout}>Logout</button>) : (<Login />)
+            token ? (<button onClick={handleLogout}>Logout</button>) : (<Navigate to="/login" />)
         }
         </div>
     );

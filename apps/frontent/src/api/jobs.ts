@@ -15,8 +15,9 @@ export async function getExperienceItems() {
 
 export async function addExperienceItem(item: string) {
     const token = localStorage.getItem('token');
+    console.debug("Adding experience item:", item);
 
-    const res = await fetch(`${API_URL}/experience-items`, {
+    const res = await fetch(`${API_URL}/experiences`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
