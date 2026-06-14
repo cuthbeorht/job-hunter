@@ -1,7 +1,5 @@
-import { Document, Font, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
+import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 import type { Resume } from '../../types/resume'
-
-Font.register({ family: 'Helvetica' })
 
 const styles = StyleSheet.create({
   page: { fontFamily: 'Helvetica', fontSize: 11, padding: 40, color: '#1f2937' },
