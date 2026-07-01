@@ -1,0 +1,21 @@
+# Copy to terraform.tfvars and fill in real values. Never commit terraform.tfvars.
+
+# --- kubectl context (from `az aks get-credentials`) ---
+kubeconfig_context = "jobhunter-aks"
+
+# --- Cloudflare ---
+cloudflare_api_token = "your-cloudflare-api-token-with-dns-edit"
+cloudflare_zone_id   = "your-cloudflare-zone-id-for-cuth.dev"
+
+# --- PostgreSQL (copy from azure terraform outputs) ---
+postgres_fqdn           = "jobhunter-postgres.postgres.database.azure.com"
+postgres_admin_username = "pgadmin"
+postgres_admin_password = "CHANGE_ME_strong_P@ssw0rd!"
+
+# --- Application secrets ---
+# Generate with: openssl rand -hex 32
+app_secret_key = "your-64-char-hex-secret-key"
+
+# --- Image references (after `az acr build` or `docker push`) ---
+backend_image  = "jobhunteracr.azurecr.io/backend:latest"
+frontend_image = "jobhunteracr.azurecr.io/frontend:latest"

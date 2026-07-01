@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     cors_origins: list[str] = ["http://localhost:5173"]
+    log_level: str = "INFO"
 
 
 settings = Settings()

@@ -21,3 +21,5 @@ I am a senior software developer. I understand backend design very well and am w
 - I want a documentation on how to run each section
 - I want a dockerfile for each section\
 - I want a docker compose file that will build and run all services as well as any necessary dependencies like a database, redis or queue
+- Assume I am using VS Code
+- I want launch.json files for running locally
