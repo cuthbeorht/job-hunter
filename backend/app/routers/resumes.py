@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -20,6 +21,8 @@ from app.schemas.resume import (
     WorkExperienceOut,
 )
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/resumes", tags=["resumes"])
 
 
@@ -35,8 +38,10 @@ async def _get_owned_resume(resume_id: uuid.UUID, user: User, db: AsyncSession) 
     )
     resume = result.scalar_one_or_none()
     if not resume:
+        logger.warning("resume not found id=%s", resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Resume not found")
     if resume.user_id != user.id:
+        logger.warning("resume ownership violation id=%s user_id=%s", resume_id, user.id)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not your resume")
     return resume
 
@@ -55,7 +60,9 @@ async def list_resumes(
         )
         .where(Resume.user_id == user.id)
     )
-    return result.scalars().all()
+    resumes = result.scalars().all()
+    logger.info("list resumes user_id=%s count=%d", user.id, len(resumes))
+    return resumes
 
 
 @router.post("", response_model=ResumeOut, status_code=status.HTTP_201_CREATED)
@@ -68,6 +75,7 @@ async def create_resume(
     db.add(resume)
     await db.commit()
     await db.refresh(resume, ["work_experiences", "educations", "skills"])
+    logger.info("created resume id=%s user_id=%s", resume.id, user.id)
     return resume
 
 
@@ -77,6 +85,7 @@ async def get_resume(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    logger.info("get resume id=%s user_id=%s", resume_id, user.id)
     return await _get_owned_resume(resume_id, user, db)
 
 
@@ -92,6 +101,7 @@ async def update_resume(
         setattr(resume, field, value)
     await db.commit()
     await db.refresh(resume, ["work_experiences", "educations", "skills"])
+    logger.info("updated resume id=%s user_id=%s", resume_id, user.id)
     return resume
 
 
@@ -104,6 +114,7 @@ async def delete_resume(
     resume = await _get_owned_resume(resume_id, user, db)
     await db.delete(resume)
     await db.commit()
+    logger.info("deleted resume id=%s user_id=%s", resume_id, user.id)
 
 
 # --- Work Experience ---
@@ -120,6 +131,7 @@ async def add_work_experience(
     db.add(entry)
     await db.commit()
     await db.refresh(entry)
+    logger.info("added work experience id=%s resume_id=%s", entry.id, resume_id)
     return entry
 
 
@@ -137,11 +149,13 @@ async def update_work_experience(
     )
     entry = result.scalar_one_or_none()
     if not entry:
+        logger.warning("work experience not found id=%s resume_id=%s", entry_id, resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     for field, value in body.model_dump().items():
         setattr(entry, field, value)
     await db.commit()
     await db.refresh(entry)
+    logger.info("updated work experience id=%s resume_id=%s", entry_id, resume_id)
     return entry
 
 
@@ -158,9 +172,11 @@ async def delete_work_experience(
     )
     entry = result.scalar_one_or_none()
     if not entry:
+        logger.warning("work experience not found id=%s resume_id=%s", entry_id, resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     await db.delete(entry)
     await db.commit()
+    logger.info("deleted work experience id=%s resume_id=%s", entry_id, resume_id)
 
 
 # --- Education ---
@@ -177,6 +193,7 @@ async def add_education(
     db.add(entry)
     await db.commit()
     await db.refresh(entry)
+    logger.info("added education id=%s resume_id=%s", entry.id, resume_id)
     return entry
 
 
@@ -194,11 +211,13 @@ async def update_education(
     )
     entry = result.scalar_one_or_none()
     if not entry:
+        logger.warning("education not found id=%s resume_id=%s", entry_id, resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     for field, value in body.model_dump().items():
         setattr(entry, field, value)
     await db.commit()
     await db.refresh(entry)
+    logger.info("updated education id=%s resume_id=%s", entry_id, resume_id)
     return entry
 
 
@@ -215,9 +234,11 @@ async def delete_education(
     )
     entry = result.scalar_one_or_none()
     if not entry:
+        logger.warning("education not found id=%s resume_id=%s", entry_id, resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     await db.delete(entry)
     await db.commit()
+    logger.info("deleted education id=%s resume_id=%s", entry_id, resume_id)
 
 
 # --- Skills ---
@@ -234,6 +255,7 @@ async def add_skill(
     db.add(entry)
     await db.commit()
     await db.refresh(entry)
+    logger.info("added skill id=%s resume_id=%s", entry.id, resume_id)
     return entry
 
 
@@ -251,11 +273,13 @@ async def update_skill(
     )
     entry = result.scalar_one_or_none()
     if not entry:
+        logger.warning("skill not found id=%s resume_id=%s", entry_id, resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     for field, value in body.model_dump().items():
         setattr(entry, field, value)
     await db.commit()
     await db.refresh(entry)
+    logger.info("updated skill id=%s resume_id=%s", entry_id, resume_id)
     return entry
 
 
@@ -272,6 +296,8 @@ async def delete_skill(
     )
     entry = result.scalar_one_or_none()
     if not entry:
+        logger.warning("skill not found id=%s resume_id=%s", entry_id, resume_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")
     await db.delete(entry)
     await db.commit()
+    logger.info("deleted skill id=%s resume_id=%s", entry_id, resume_id)

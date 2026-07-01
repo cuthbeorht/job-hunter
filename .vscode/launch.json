@@ -1,0 +1,62 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: FastAPI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app.main:app", "--reload", "--port", "8000"],
+      "jinja": true,
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DATABASE_URL": "postgresql+asyncpg://postgres:postgres@localhost:5432/job_hunter"
+      },
+      "python": "${workspaceFolder}/backend/.venv/bin/python"
+    },
+    {
+      "name": "Backend: Pytest",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-v"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DATABASE_URL": "postgresql+asyncpg://postgres:postgres@localhost:5432/job_hunter"
+      },
+      "python": "${workspaceFolder}/backend/.venv/bin/python"
+    },
+    {
+      "name": "Backend: Pytest (current file)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v"],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DATABASE_URL": "postgresql+asyncpg://postgres:postgres@localhost:5432/job_hunter"
+      },
+      "python": "${workspaceFolder}/backend/.venv/bin/python"
+    },
+    {
+      "name": "Frontend: Firefox",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "vite:///*": "${workspaceFolder}/frontend/src/*"
+      },
+      "preLaunchTask": "Start Vite Dev Server"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack",
+      "configurations": ["Backend: FastAPI", "Frontend: Firefox"]
+    }
+  ]
+}

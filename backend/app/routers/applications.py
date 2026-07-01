@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -10,6 +11,8 @@ from app.models.application import JobApplication
 from app.models.user import User
 from app.schemas.application import ApplicationIn, ApplicationOut
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/applications", tags=["applications"])
 
 
@@ -19,8 +22,10 @@ async def _get_owned_application(
     result = await db.execute(select(JobApplication).where(JobApplication.id == app_id))
     application = result.scalar_one_or_none()
     if not application:
+        logger.warning("application not found id=%s", app_id)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
     if application.user_id != user.id:
+        logger.warning("application ownership violation id=%s user_id=%s", app_id, user.id)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not your application")
     return application
 
@@ -33,7 +38,9 @@ async def list_applications(
     result = await db.execute(
         select(JobApplication).where(JobApplication.user_id == user.id)
     )
-    return result.scalars().all()
+    applications = result.scalars().all()
+    logger.info("list applications user_id=%s count=%d", user.id, len(applications))
+    return applications
 
 
 @router.post("", response_model=ApplicationOut, status_code=status.HTTP_201_CREATED)
@@ -46,6 +53,7 @@ async def create_application(
     db.add(application)
     await db.commit()
     await db.refresh(application)
+    logger.info("created application id=%s user_id=%s", application.id, user.id)
     return application
 
 
@@ -55,6 +63,7 @@ async def get_application(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    logger.info("get application id=%s user_id=%s", app_id, user.id)
     return await _get_owned_application(app_id, user, db)
 
 
@@ -70,6 +79,7 @@ async def update_application(
         setattr(application, field, value)
     await db.commit()
     await db.refresh(application)
+    logger.info("updated application id=%s user_id=%s", app_id, user.id)
     return application
 
 
@@ -82,3 +92,4 @@ async def delete_application(
     application = await _get_owned_application(app_id, user, db)
     await db.delete(application)
     await db.commit()
+    logger.info("deleted application id=%s user_id=%s", app_id, user.id)

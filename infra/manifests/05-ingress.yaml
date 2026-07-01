@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: job-hunter
+  namespace: job-hunter
+  annotations:
+    # Strip the /api prefix before forwarding to the backend service
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # Issue a TLS certificate via Let's Encrypt (ClusterIssuer in 01-clusterissuer.yaml)
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - jobs.k8s.cuth.dev
+      secretName: job-hunter-tls
+  rules:
+    - host: jobs.k8s.cuth.dev
+      http:
+        paths:
+          # /api/(...) → backend service at /$1 (prefix stripped)
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8000
+          # All other paths → frontend (React SPA)
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
