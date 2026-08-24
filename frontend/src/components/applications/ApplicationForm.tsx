@@ -19,45 +19,45 @@ export default function ApplicationForm({ initial, onSubmit, isPending, onCancel
       <h3>{initial ? 'Edit Application' : 'New Application'}</h3>
       <div style={styles.row}>
         <div style={styles.field}>
-          <label>Company *</label>
-          <input {...register('company')} required style={styles.input} />
+          <label htmlFor="app-company">Company *</label>
+          <input id="app-company" {...register('company')} required style={styles.input} />
         </div>
         <div style={styles.field}>
-          <label>Position *</label>
-          <input {...register('position')} required style={styles.input} />
+          <label htmlFor="app-position">Position *</label>
+          <input id="app-position" {...register('position')} required style={styles.input} />
         </div>
       </div>
       <div style={styles.row}>
         <div style={styles.field}>
-          <label>Status</label>
-          <select {...register('status')} style={styles.input}>
+          <label htmlFor="app-status">Status</label>
+          <select id="app-status" {...register('status')} style={styles.input}>
             {APPLICATION_STATUSES.map((s) => (
               <option key={s} value={s}>{STATUS_LABELS[s]}</option>
             ))}
           </select>
         </div>
         <div style={styles.field}>
-          <label>Applied Date</label>
-          <input type="date" {...register('applied_date')} style={styles.input} />
+          <label htmlFor="app-applied-date">Applied Date</label>
+          <input id="app-applied-date" type="date" {...register('applied_date')} style={styles.input} />
         </div>
       </div>
       <div style={styles.field}>
-        <label>Job URL</label>
-        <input {...register('job_url')} style={styles.input} />
+        <label htmlFor="app-job-url">Job URL</label>
+        <input id="app-job-url" {...register('job_url')} style={styles.input} />
       </div>
       <div style={styles.row}>
         <div style={styles.field}>
-          <label>Salary Min</label>
-          <input type="number" {...register('salary_min', { valueAsNumber: true })} style={styles.input} />
+          <label htmlFor="app-salary-min">Salary Min</label>
+          <input id="app-salary-min" type="number" {...register('salary_min', { valueAsNumber: true })} style={styles.input} />
         </div>
         <div style={styles.field}>
-          <label>Salary Max</label>
-          <input type="number" {...register('salary_max', { valueAsNumber: true })} style={styles.input} />
+          <label htmlFor="app-salary-max">Salary Max</label>
+          <input id="app-salary-max" type="number" {...register('salary_max', { valueAsNumber: true })} style={styles.input} />
         </div>
       </div>
       <div style={styles.field}>
-        <label>Notes</label>
-        <textarea {...register('notes')} rows={3} style={{ ...styles.input, resize: 'vertical' }} />
+        <label htmlFor="app-notes">Notes</label>
+        <textarea id="app-notes" {...register('notes')} rows={3} style={{ ...styles.input, resize: 'vertical' }} />
       </div>
       <div style={styles.actions}>
         <button type="button" onClick={onCancel} style={styles.cancelBtn}>Cancel</button>
