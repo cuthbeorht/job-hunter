@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import TokenOut, UserOut, UserRegister, UserLogin
+from app.schemas.user import TokenOut, UserLogin, UserOut, UserRegister
 from app.security import create_access_token, hash_password, verify_password
 
 logger = logging.getLogger(__name__)
@@ -30,9 +30,11 @@ async def register(body: UserRegister, db: AsyncSession = Depends(get_db)):
         await db.refresh(user)
         logger.info("registered user id=%s email=%s", user.id, body.email)
         return user
-    except Exception:
+    except Exception as exc:
         logger.exception("register error email=%s", body.email)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Registration failed")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Registration failed"
+        ) from exc
 
 
 @router.post("/login", response_model=TokenOut)

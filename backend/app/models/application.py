@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 
-class ApplicationStatus(str, Enum):
+class ApplicationStatus(str, Enum):  # noqa: UP042
     APPLIED = "APPLIED"
     PHONE_SCREEN = "PHONE_SCREEN"
     INTERVIEW = "INTERVIEW"

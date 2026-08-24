@@ -1,6 +1,7 @@
+import uuid
+
 import pytest
 from httpx import AsyncClient
-
 
 APPLICATION_PAYLOAD = {
     "company": "Acme Corp",
@@ -31,7 +32,9 @@ async def test_list_applications(auth_client: AsyncClient):
 @pytest.mark.asyncio
 async def test_update_application_status(auth_client: AsyncClient):
     app_id = (await auth_client.post("/applications", json=APPLICATION_PAYLOAD)).json()["id"]
-    resp = await auth_client.put(f"/applications/{app_id}", json={**APPLICATION_PAYLOAD, "status": "INTERVIEW"})
+    resp = await auth_client.put(
+        f"/applications/{app_id}", json={**APPLICATION_PAYLOAD, "status": "INTERVIEW"}
+    )
     assert resp.status_code == 200
     assert resp.json()["status"] == "INTERVIEW"
 
@@ -48,10 +51,14 @@ async def test_delete_application(auth_client: AsyncClient):
 @pytest.mark.asyncio
 async def test_cannot_access_other_users_application(client: AsyncClient):
     await client.post("/auth/register", json={"email": "alice@example.com", "password": "pass"})
-    alice_token = (await client.post("/auth/login", json={"email": "alice@example.com", "password": "pass"})).json()["access_token"]
+    alice_token = (
+        await client.post("/auth/login", json={"email": "alice@example.com", "password": "pass"})
+    ).json()["access_token"]
 
     await client.post("/auth/register", json={"email": "bob@example.com", "password": "pass"})
-    bob_token = (await client.post("/auth/login", json={"email": "bob@example.com", "password": "pass"})).json()["access_token"]
+    bob_token = (
+        await client.post("/auth/login", json={"email": "bob@example.com", "password": "pass"})
+    ).json()["access_token"]
 
     client.headers["Authorization"] = f"Bearer {alice_token}"
     app_id = (await client.post("/applications", json=APPLICATION_PAYLOAD)).json()["id"]
@@ -65,3 +72,61 @@ async def test_cannot_access_other_users_application(client: AsyncClient):
 async def test_requires_auth(client: AsyncClient):
     resp = await client.get("/applications")
     assert resp.status_code in (401, 403)
+
+
+@pytest.mark.asyncio
+async def test_get_nonexistent_application(auth_client: AsyncClient):
+    resp = await auth_client.get(f"/applications/{uuid.uuid4()}")
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_update_nonexistent_application(auth_client: AsyncClient):
+    resp = await auth_client.put(f"/applications/{uuid.uuid4()}", json=APPLICATION_PAYLOAD)
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_delete_nonexistent_application(auth_client: AsyncClient):
+    resp = await auth_client.delete(f"/applications/{uuid.uuid4()}")
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_get_application_malformed_id(auth_client: AsyncClient):
+    resp = await auth_client.get("/applications/not-a-uuid")
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_application_invalid_status(auth_client: AsyncClient):
+    resp = await auth_client.post(
+        "/applications", json={**APPLICATION_PAYLOAD, "status": "NOT_A_STATUS"}
+    )
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_application_missing_required_field(auth_client: AsyncClient):
+    resp = await auth_client.post("/applications", json={"position": "Software Engineer"})
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_cannot_update_other_users_application(auth_client: AsyncClient, second_user_token):
+    app_id = (await auth_client.post("/applications", json=APPLICATION_PAYLOAD)).json()["id"]
+    bob_token = await second_user_token("bob@example.com")
+    auth_client.headers["Authorization"] = f"Bearer {bob_token}"
+    resp = await auth_client.put(
+        f"/applications/{app_id}", json={**APPLICATION_PAYLOAD, "status": "INTERVIEW"}
+    )
+    assert resp.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_cannot_delete_other_users_application(auth_client: AsyncClient, second_user_token):
+    app_id = (await auth_client.post("/applications", json=APPLICATION_PAYLOAD)).json()["id"]
+    bob_token = await second_user_token("bob@example.com")
+    auth_client.headers["Authorization"] = f"Bearer {bob_token}"
+    resp = await auth_client.delete(f"/applications/{app_id}")
+    assert resp.status_code == 403

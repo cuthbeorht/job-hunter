@@ -17,5 +17,9 @@ class User(Base):
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )
 
-    resumes: Mapped[list["Resume"]] = relationship(back_populates="user", cascade="all, delete-orphan")  # noqa: F821
-    applications: Mapped[list["JobApplication"]] = relationship(back_populates="user", cascade="all, delete-orphan")  # noqa: F821
+    resumes: Mapped[list["Resume"]] = relationship(  # noqa: F821
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    applications: Mapped[list["JobApplication"]] = relationship(  # noqa: F821
+        back_populates="user", cascade="all, delete-orphan"
+    )
