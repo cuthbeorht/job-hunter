@@ -99,7 +99,7 @@ const styles: Record<string, React.CSSProperties> = {
   select: { padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 14 },
   addBtn: { padding: '8px 16px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 14 },
   stats: { display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
-  statChip: { padding: '6px 12px', border: '1px solid #e5e7eb', borderRadius: 20, cursor: 'pointer', background: '#f9fafb', fontSize: 12, display: 'flex', gap: 4 },
+  statChip: { color: '#0000ff', padding: '6px 12px', border: '1px solid #e5e7eb', borderRadius: 20, cursor: 'pointer', background: '#f9fafb', fontSize: 12, display: 'flex', gap: 4 },
   statChipActive: { background: '#eff6ff', borderColor: '#bfdbfe', color: '#2563eb' },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 },
   empty: { textAlign: 'center', color: '#9ca3af', padding: 60 },
