@@ -18,16 +18,16 @@ export default function RegisterForm() {
   })
 
   return (
-    <form onSubmit={handleSubmit((data) => register_.mutate(data))} style={styles.form}>
+    <form onSubmit={handleSubmit((data) => register_.mutate(data))} style={styles.form} noValidate>
       <h2>Create Account</h2>
       <div style={styles.field}>
-        <label>Email</label>
-        <input type="email" {...register('email')} style={styles.input} />
+        <label htmlFor="register-email">Email</label>
+        <input id="register-email" type="email" {...register('email')} style={styles.input} />
         {errors.email && <span style={styles.error}>{errors.email.message}</span>}
       </div>
       <div style={styles.field}>
-        <label>Password</label>
-        <input type="password" {...register('password')} style={styles.input} />
+        <label htmlFor="register-password">Password</label>
+        <input id="register-password" type="password" {...register('password')} style={styles.input} />
         {errors.password && <span style={styles.error}>{errors.password.message}</span>}
       </div>
       {register_.isError && <span style={styles.error}>Registration failed. Email may already be taken.</span>}

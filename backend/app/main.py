@@ -6,29 +6,31 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import auth, resumes, applications
+from app.routers import applications, auth, resumes
 
-logging.config.dictConfig({
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "format": "%(asctime)s %(levelname)-8s %(name)s  %(message)s",
-            "datefmt": "%Y-%m-%dT%H:%M:%S",
-        }
-    },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "default",
-        }
-    },
-    "root": {"handlers": ["console"], "level": settings.log_level},
-    "loggers": {
-        "uvicorn": {"propagate": True},
-        "uvicorn.access": {"propagate": False},
-    },
-})
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "default": {
+                "format": "%(asctime)s %(levelname)-8s %(name)s  %(message)s",
+                "datefmt": "%Y-%m-%dT%H:%M:%S",
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "default",
+            }
+        },
+        "root": {"handlers": ["console"], "level": settings.log_level},
+        "loggers": {
+            "uvicorn": {"propagate": True},
+            "uvicorn.access": {"propagate": False},
+        },
+    }
+)
 
 logger = logging.getLogger(__name__)
 

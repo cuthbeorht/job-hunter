@@ -119,7 +119,12 @@ async def delete_resume(
 
 # --- Work Experience ---
 
-@router.post("/{resume_id}/work-experience", response_model=WorkExperienceOut, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/{resume_id}/work-experience",
+    response_model=WorkExperienceOut,
+    status_code=status.HTTP_201_CREATED,
+)
 async def add_work_experience(
     resume_id: uuid.UUID,
     body: WorkExperienceIn,
@@ -145,7 +150,9 @@ async def update_work_experience(
 ):
     await _get_owned_resume(resume_id, user, db)
     result = await db.execute(
-        select(WorkExperience).where(WorkExperience.id == entry_id, WorkExperience.resume_id == resume_id)
+        select(WorkExperience).where(
+            WorkExperience.id == entry_id, WorkExperience.resume_id == resume_id
+        )
     )
     entry = result.scalar_one_or_none()
     if not entry:
@@ -168,7 +175,9 @@ async def delete_work_experience(
 ):
     await _get_owned_resume(resume_id, user, db)
     result = await db.execute(
-        select(WorkExperience).where(WorkExperience.id == entry_id, WorkExperience.resume_id == resume_id)
+        select(WorkExperience).where(
+            WorkExperience.id == entry_id, WorkExperience.resume_id == resume_id
+        )
     )
     entry = result.scalar_one_or_none()
     if not entry:
@@ -181,7 +190,10 @@ async def delete_work_experience(
 
 # --- Education ---
 
-@router.post("/{resume_id}/education", response_model=EducationOut, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/{resume_id}/education", response_model=EducationOut, status_code=status.HTTP_201_CREATED
+)
 async def add_education(
     resume_id: uuid.UUID,
     body: EducationIn,
@@ -242,6 +254,7 @@ async def delete_education(
 
 
 # --- Skills ---
+
 
 @router.post("/{resume_id}/skills", response_model=SkillOut, status_code=status.HTTP_201_CREATED)
 async def add_skill(

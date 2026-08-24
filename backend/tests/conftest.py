@@ -37,10 +37,27 @@ async def client(db: AsyncSession) -> AsyncClient:
     app.dependency_overrides.clear()
 
 
+async def _register_and_login(client: AsyncClient, email: str, password: str = "secret123") -> str:
+    await client.post("/auth/register", json={"email": email, "password": password})
+    resp = await client.post("/auth/login", json={"email": email, "password": password})
+    return resp.json()["access_token"]
+
+
 @pytest.fixture
 async def auth_client(client: AsyncClient) -> AsyncClient:
-    await client.post("/auth/register", json={"email": "test@example.com", "password": "secret123"})
-    resp = await client.post("/auth/login", json={"email": "test@example.com", "password": "secret123"})
-    token = resp.json()["access_token"]
+    token = await _register_and_login(client, "test@example.com")
     client.headers["Authorization"] = f"Bearer {token}"
     return client
+
+
+@pytest.fixture
+def second_user_token(client: AsyncClient):
+    """Returns an async factory that registers/logs in a second user and
+    returns their bearer token, leaving `client`'s current auth header untouched
+    until the caller assigns it.
+    """
+
+    async def _make(email: str = "other@example.com", password: str = "secret123") -> str:
+        return await _register_and_login(client, email, password)
+
+    return _make

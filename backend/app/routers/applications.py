@@ -16,9 +16,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/applications", tags=["applications"])
 
 
-async def _get_owned_application(
-    app_id: uuid.UUID, user: User, db: AsyncSession
-) -> JobApplication:
+async def _get_owned_application(app_id: uuid.UUID, user: User, db: AsyncSession) -> JobApplication:
     result = await db.execute(select(JobApplication).where(JobApplication.id == app_id))
     application = result.scalar_one_or_none()
     if not application:
@@ -35,9 +33,7 @@ async def list_applications(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(
-        select(JobApplication).where(JobApplication.user_id == user.id)
-    )
+    result = await db.execute(select(JobApplication).where(JobApplication.user_id == user.id))
     applications = result.scalars().all()
     logger.info("list applications user_id=%s count=%d", user.id, len(applications))
     return applications

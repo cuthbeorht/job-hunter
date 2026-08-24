@@ -44,4 +44,24 @@ describe('ApplicationCard', () => {
     await userEvent.click(screen.getByRole('button', { name: /edit/i }))
     expect(onEdit).toHaveBeenCalledWith(app)
   })
+
+  it('renders a job posting link when job_url is set', () => {
+    render(<ApplicationCard application={{ ...app, job_url: 'https://example.com/job' }} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByRole('link', { name: /view posting/i })).toHaveAttribute('href', 'https://example.com/job')
+  })
+
+  it('omits the job posting link when job_url is null', () => {
+    render(<ApplicationCard application={{ ...app, job_url: null }} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.queryByRole('link', { name: /view posting/i })).not.toBeInTheDocument()
+  })
+
+  it('renders a single-sided salary range when only salary_min is set', () => {
+    render(<ApplicationCard application={{ ...app, salary_min: 90000, salary_max: null }} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.getByText('$90,000')).toBeInTheDocument()
+  })
+
+  it('omits the salary line entirely when neither bound is set', () => {
+    render(<ApplicationCard application={{ ...app, salary_min: null, salary_max: null }} onEdit={vi.fn()} onDelete={vi.fn()} />)
+    expect(screen.queryByText(/\$/)).not.toBeInTheDocument()
+  })
 })
