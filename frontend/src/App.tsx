@@ -49,5 +49,5 @@ const styles: Record<string, React.CSSProperties> = {
   brand: { fontWeight: 700, fontSize: 18, color: '#1f2937' },
   navLinks: { display: 'flex', gap: 16, flex: 1 },
   navLink: { color: '#4b5563', textDecoration: 'none', fontSize: 14, fontWeight: 500 },
-  logoutBtn: { marginLeft: 'auto', padding: '6px 14px', border: '1px solid #e5e7eb', borderRadius: 6, cursor: 'pointer', background: '#fff', fontSize: 13 },
+  logoutBtn: { marginLeft: 'auto', padding: '6px 14px', border: '1px solid #e5e7eb', borderRadius: 6, cursor: 'pointer', background: '#00f', fontSize: 13 },
 }
